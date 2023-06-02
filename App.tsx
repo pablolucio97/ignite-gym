@@ -5,7 +5,7 @@ import {
   Roboto_400Regular,
   Roboto_700Bold
 } from '@expo-google-fonts/roboto'
-import { Spinner } from '@components/Spinner';
+import {SignIn} from '@screens/SignIn'
 import { THEME } from './src/themes'
 export default function App() {
 
@@ -18,7 +18,7 @@ export default function App() {
         barStyle='light-content'
         backgroundColor='transparent'
       />
-      {fontsLoaded ? <Text>Open up App.tsx to start working on your app!</Text> : <View />}
+      {fontsLoaded ? <SignIn /> : <View />}
     </NativeBaseProvider>
   );
 }
