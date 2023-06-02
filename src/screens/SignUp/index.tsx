@@ -11,7 +11,7 @@ import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
-export function SignIn() {
+export function SignUp() {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -47,8 +47,11 @@ export function SignIn() {
             mb={6}
             fontFamily='heading'
           >
-            Acesse sua conta
+            Crie sua conta
           </Heading>
+          <Input
+            placeholder='Nome'
+          />
           <Input
             placeholder='E-mail'
             autoCapitalize='none'
@@ -59,12 +62,12 @@ export function SignIn() {
             secureTextEntry
           />
           <Button
-            title='Acessar'
+            title='Criar e acessar'
+            mb={12}
           />
           <Button
-            title='Criar conta'
+            title='Voltar para login'
             variant='outline'
-            mt={24}
           />
         </Center>
       </VStack>
