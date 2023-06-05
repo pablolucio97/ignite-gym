@@ -5,9 +5,9 @@ import {
   Roboto_400Regular,
   Roboto_700Bold
 } from '@expo-google-fonts/roboto'
-import {SignIn} from '@screens/SignIn'
 import { THEME } from './src/themes'
-import { SignUp } from '@screens/SignUp';
+import { Routes } from '@routes/index';
+import { Spinner } from '@components/Spinner';
 export default function App() {
 
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold })
@@ -19,7 +19,7 @@ export default function App() {
         barStyle='light-content'
         backgroundColor='transparent'
       />
-      {fontsLoaded ? <SignUp /> : <View />}
+      {fontsLoaded ? <Routes /> : <Spinner />}
     </NativeBaseProvider>
   );
 }

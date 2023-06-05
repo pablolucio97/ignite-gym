@@ -10,8 +10,16 @@ import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
+import { useNavigation } from '@react-navigation/native'
 
 export function SignUp() {
+
+  const navigation = useNavigation()
+
+  function handleGoBack() {
+    navigation.goBack()
+  }
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -26,6 +34,7 @@ export function SignUp() {
       >
         <Image
           source={BackgroundImg}
+          defaultSource={BackgroundImg}
           alt='pessoas treinando'
           resizeMode='contain'
           position='absolute'
@@ -66,6 +75,7 @@ export function SignUp() {
             mb={12}
           />
           <Button
+            onPress={handleGoBack}
             title='Voltar para login'
             variant='outline'
           />
