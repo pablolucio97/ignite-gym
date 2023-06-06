@@ -10,7 +10,7 @@ type AuthRoutes = {
 
 export type AuthNavigationRoutesProps = StackNavigationProp<AuthRoutes>
 
-const Stack = createStackNavigator()
+const Stack = createStackNavigator<AuthRoutes>()
 
 export function AuthRoutes() {
     return (
