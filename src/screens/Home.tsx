@@ -1,6 +1,13 @@
 import { Group } from "@components/Group";
+import { ExerciseCard } from '@components/ExerciseCard';
 import { HomeHeader } from "@components/HomeHeader";
-import { VStack, FlatList } from "native-base";
+import {
+    VStack,
+    FlatList,
+    HStack,
+    Heading,
+    Text
+} from "native-base";
 import { useState } from "react";
 
 export function Home() {
@@ -13,8 +20,15 @@ export function Home() {
         'Perna',
     ]
 
+    const exercisesList = [
+        'Puxada frontal',
+        'Remada unilateral',
+        'Levantamento terras'
+    ]
+
     const [groups] = useState(groupOptions)
     const [selectedGroup, setSelectedGroup] = useState(groupOptions[0])
+    const [exercises, setExercises] = useState(exercisesList);
 
     return (
         <VStack flex={1}>
@@ -25,7 +39,7 @@ export function Home() {
                 renderItem={({ item }) => (
                     <Group
                         name={item}
-                        isActive={selectedGroup === item}
+                        isActive={selectedGroup.toString() === item.toString()}
                         onPress={() => setSelectedGroup(item)}
                     />
                 )}
@@ -37,6 +51,30 @@ export function Home() {
                     px: 8
                 }}
             />
+
+            <VStack px={8}>
+                <HStack justifyContent="space-between" mb={5}>
+                    <Heading color="gray.200" fontSize="md">
+                        Exercícios
+                    </Heading>
+
+                    <Text color="gray.200" fontSize="sm">
+                        {exercises.length}
+                    </Text>
+                </HStack>
+                <FlatList
+                    data={exercises}
+                    keyExtractor={item => item}
+                    renderItem={({ item }) => (
+                        <ExerciseCard
+                         />
+                    )}
+                    showsVerticalScrollIndicator={false}
+                    _contentContainerStyle={{
+                        paddingBottom: 20
+                    }}
+                />
+            </VStack>
         </VStack>
     )
 }
