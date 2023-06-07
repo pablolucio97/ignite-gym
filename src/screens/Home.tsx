@@ -9,6 +9,8 @@ import {
     Text
 } from "native-base";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { AppRoutesBottomTabNavigationProps } from "@routes/app.routes";
 
 export function Home() {
 
@@ -30,6 +32,12 @@ export function Home() {
     const [selectedGroup, setSelectedGroup] = useState(groupOptions[0])
     const [exercises, setExercises] = useState(exercisesList);
 
+    const navigation = useNavigation<AppRoutesBottomTabNavigationProps>()
+
+    function handleOpenExerciseDetails() {
+        navigation.navigate('exercise')
+    }
+
     return (
         <VStack flex={1}>
             <HomeHeader />
@@ -46,6 +54,7 @@ export function Home() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 maxHeight={10}
+                minHeight={10}
                 my={10}
                 _contentContainerStyle={{
                     px: 8
@@ -67,7 +76,8 @@ export function Home() {
                     keyExtractor={item => item}
                     renderItem={({ item }) => (
                         <ExerciseCard
-                         />
+                            onPress={handleOpenExerciseDetails}
+                        />
                     )}
                     showsVerticalScrollIndicator={false}
                     _contentContainerStyle={{
