@@ -11,8 +11,9 @@ import {
     Heading
 } from "native-base";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system';
 
 export function Profile() {
 
@@ -36,6 +37,13 @@ export function Profile() {
             }
 
             if (selectedPhoto.assets[0].uri) {
+                const fileInfo = await FileSystem
+                    .getInfoAsync(selectedPhoto.assets[0].uri) as FileSystem.FileInfo
+
+                if (fileInfo.size && (fileInfo.size / 1024 / 1024) > 2) {
+                    return Alert.alert('Tamanho máximo de imagem excedido', 'Escolha uma imagem com até 2 mb.')
+                }
+
                 setPhotoUri(selectedPhoto.assets[0].uri)
             }
 
