@@ -12,12 +12,40 @@ import {
 } from "native-base";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
+import * as ImagePicker from 'expo-image-picker'
 
 export function Profile() {
 
     const PHOTO_SIZE = 32
 
     const [photoIsLoading, setPhotoIsLoading] = useState(false)
+    const [photoUri, setPhotoUri] = useState('')
+
+    async function handleSelectUserPhoto() {
+        try {
+            setPhotoIsLoading(true)
+            const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                aspect: [4, 4],
+            });
+
+            if (selectedPhoto.canceled) {
+                return
+            }
+
+            if (selectedPhoto.assets[0].uri) {
+                setPhotoUri(selectedPhoto.assets[0].uri)
+            }
+
+        } catch (error) {
+            console.log(error)
+            setPhotoIsLoading(false)
+        } finally {
+            setPhotoIsLoading(false)
+        }
+    }
 
     return (
         <VStack flex={1}>
@@ -35,13 +63,18 @@ export function Profile() {
                             />
                             :
                             <UserPhoto
-                                source={{ uri: 'https://github.com/pablolucio97.png' }}
+                                source={{
+                                    uri: photoUri ? photoUri :
+                                        'https://github.com/pablolucio97.png'
+                                }}
                                 alt="Foto do usuário"
                                 size={PHOTO_SIZE}
                             />
                     }
 
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleSelectUserPhoto}
+                    >
                         <Text
                             color="green.500"
                             fontWeight="bold"
