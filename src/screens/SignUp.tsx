@@ -12,10 +12,28 @@ import {
   VStack
 } from 'native-base'
 import { useForm, Controller } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}
 
 export function SignUp() {
+  
+    const signUpSchema = yup.object({
+      name: yup.string().required('Informe o nome'),
+      email: yup.string().required('Informe o e-mail').email('E-mail inválido'),
+      password: yup.string().required('Informe a senha').min(6, 'A senha deve ter pelo menos 6 dígitos'),
+      password_confirmation: yup.string().required('Confirme sua senha').oneOf([yup.ref('password')], 'Confirmação de senha não confere')
+    })
 
-  const { control, handleSubmit } = useForm()
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema)
+  })
 
   const navigation = useNavigation()
 
@@ -23,7 +41,7 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleSignUp(data: any) {
+  function handleSignUp(data: FormDataProps) {
     console.log(data)
   }
 
@@ -72,12 +90,12 @@ export function SignUp() {
             render={({ field }) => (
               <Input
                 placeholder='Nome'
-                onChange={field.onChange}
+                onChangeText={field.onChange}
                 value={field.value}
+                errorMessage={errors?.name?.message}
               />
             )}
           />
-
           <Controller
             name='email'
             control={control}
@@ -87,11 +105,11 @@ export function SignUp() {
                 autoCapitalize='none'
                 keyboardType='email-address'
                 value={field.value}
-                onChange={field.onChange}
+                onChangeText={field.onChange}
+                errorMessage={errors?.email?.message}
               />
             )}
           />
-
           <Controller
             name='password'
             control={control}
@@ -100,22 +118,24 @@ export function SignUp() {
                 placeholder='Senha'
                 secureTextEntry
                 value={field.value}
-                onChange={field.onChange}
+                onChangeText={field.onChange}
+                errorMessage={errors.password?.message}
               />
             )}
           />
 
           <Controller
-            name='confirm_password'
+            name='password_confirmation'
             control={control}
             render={({ field }) => (
               <Input
                 placeholder='Confirmação da senha'
                 secureTextEntry
                 value={field.value}
-                onChange={field.onChange}
+                onChangeText={field.onChange}
                 onSubmitEditing={handleSubmit(handleSignUp)}
                 returnKeyType='send'
+                errorMessage={errors.password_confirmation?.message}
               />
             )}
           />
