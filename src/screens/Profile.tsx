@@ -8,7 +8,8 @@ import {
     VStack,
     Skeleton,
     Text,
-    Heading
+    Heading,
+    useToast
 } from "native-base";
 import { useState } from "react";
 import { Alert, TouchableOpacity } from "react-native";
@@ -21,6 +22,8 @@ export function Profile() {
 
     const [photoIsLoading, setPhotoIsLoading] = useState(false)
     const [photoUri, setPhotoUri] = useState('')
+
+    const toast = useToast()
 
     async function handleSelectUserPhoto() {
         try {
@@ -41,7 +44,11 @@ export function Profile() {
                     .getInfoAsync(selectedPhoto.assets[0].uri) as FileSystem.FileInfo
 
                 if (fileInfo.size && (fileInfo.size / 1024 / 1024) > 2) {
-                    return Alert.alert('Tamanho máximo de imagem excedido', 'Escolha uma imagem com até 2 mb.')
+                    return toast.show({
+                        title: 'Escolha uma imagem com até 2 mb.',
+                        placement: 'top',
+                        bgColor: 'red.500'
+                    })
                 }
 
                 setPhotoUri(selectedPhoto.assets[0].uri)

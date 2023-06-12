@@ -11,13 +11,20 @@ import {
   Text,
   VStack
 } from 'native-base'
+import { useForm, Controller } from 'react-hook-form'
 
 export function SignUp() {
+
+  const { control, handleSubmit } = useForm()
 
   const navigation = useNavigation()
 
   function handleGoBack() {
     navigation.goBack()
+  }
+
+  function handleSignUp(data: any) {
+    console.log(data)
   }
 
   return (
@@ -58,21 +65,65 @@ export function SignUp() {
           >
             Crie sua conta
           </Heading>
-          <Input
-            placeholder='Nome'
+
+          <Controller
+            name='name'
+            control={control}
+            render={({ field }) => (
+              <Input
+                placeholder='Nome'
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
           />
-          <Input
-            placeholder='E-mail'
-            autoCapitalize='none'
-            keyboardType='email-address'
+
+          <Controller
+            name='email'
+            control={control}
+            render={({ field }) => (
+              <Input
+                placeholder='E-mail'
+                autoCapitalize='none'
+                keyboardType='email-address'
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
           />
-          <Input
-            placeholder='Senha'
-            secureTextEntry
+
+          <Controller
+            name='password'
+            control={control}
+            render={({ field }) => (
+              <Input
+                placeholder='Senha'
+                secureTextEntry
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
           />
+
+          <Controller
+            name='confirm_password'
+            control={control}
+            render={({ field }) => (
+              <Input
+                placeholder='Confirmação da senha'
+                secureTextEntry
+                value={field.value}
+                onChange={field.onChange}
+                onSubmitEditing={handleSubmit(handleSignUp)}
+                returnKeyType='send'
+              />
+            )}
+          />
+
           <Button
             title='Criar e acessar'
             mb={12}
+            onPress={handleSubmit(handleSignUp)}
           />
           <Button
             onPress={handleGoBack}
