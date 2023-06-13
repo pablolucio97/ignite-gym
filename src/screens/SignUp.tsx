@@ -14,6 +14,10 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
+import { api } from '@services/api'
+import axios from 'axios'
+import { Alert } from 'react-native'
 
 type FormDataProps = {
   name: string;
@@ -23,17 +27,19 @@ type FormDataProps = {
 }
 
 export function SignUp() {
-  
-    const signUpSchema = yup.object({
-      name: yup.string().required('Informe o nome'),
-      email: yup.string().required('Informe o e-mail').email('E-mail inválido'),
-      password: yup.string().required('Informe a senha').min(6, 'A senha deve ter pelo menos 6 dígitos'),
-      password_confirmation: yup.string().required('Confirme sua senha').oneOf([yup.ref('password')], 'Confirmação de senha não confere')
-    })
+
+  const signUpSchema = yup.object({
+    name: yup.string().required('Informe o nome'),
+    email: yup.string().required('Informe o e-mail').email('E-mail inválido'),
+    password: yup.string().required('Informe a senha').min(6, 'A senha deve ter pelo menos 6 dígitos'),
+    password_confirmation: yup.string().required('Confirme sua senha').oneOf([yup.ref('password')], 'Confirmação de senha não confere')
+  })
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema)
   })
+
+  const [loading, setLoading] = useState(false)
 
   const navigation = useNavigation()
 
@@ -41,8 +47,18 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleSignUp(data: FormDataProps) {
-    console.log(data)
+  async function handleSignUp({ name, email, password }: FormDataProps) {
+    setLoading(true)
+    try {
+      await api.post('/users', { name, email, password })
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Alert.alert('Erro', error.response?.data.message)
+      }
+      setLoading(false)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -65,7 +81,7 @@ export function SignUp() {
           position='absolute'
         />
 
-        <Center my={24}>
+        <Center my={12}>
           <LogoSvg />
           <Text
             color='gray.100'
@@ -144,11 +160,12 @@ export function SignUp() {
             title='Criar e acessar'
             mb={12}
             onPress={handleSubmit(handleSignUp)}
+            isLoading={loading}
           />
           <Button
+            variant='outline'
             onPress={handleGoBack}
             title='Voltar para login'
-            variant='outline'
           />
         </Center>
       </VStack>
