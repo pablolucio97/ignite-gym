@@ -9,7 +9,8 @@ import {
   Image,
   ScrollView,
   Text,
-  VStack
+  VStack,
+  useToast
 } from 'native-base'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
@@ -18,6 +19,7 @@ import { useState } from 'react'
 import { api } from '@services/api'
 import axios from 'axios'
 import { Alert } from 'react-native'
+import { AppError } from '@utils/AppError'
 
 type FormDataProps = {
   name: string;
@@ -42,6 +44,7 @@ export function SignUp() {
   const [loading, setLoading] = useState(false)
 
   const navigation = useNavigation()
+  const toast = useToast()
 
   function handleGoBack() {
     navigation.goBack()
@@ -52,9 +55,14 @@ export function SignUp() {
     try {
       await api.post('/users', { name, email, password })
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        Alert.alert('Erro', error.response?.data.message)
-      }
+      const isAppError = error instanceof AppError
+      const messageError = isAppError ? error.message : 'Não foi possivel conectar ao servidor.'
+      
+      toast.show({
+        title: messageError,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
       setLoading(false)
     } finally {
       setLoading(false)
