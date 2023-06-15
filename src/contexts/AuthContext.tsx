@@ -1,4 +1,5 @@
 import { UserDTO } from '@dtos/UserDto'
+import { api } from '@services/api';
 import { ReactNode, createContext, useState } from 'react'
 
 type FormData = {
@@ -21,19 +22,23 @@ export const AuthContext = createContext<AuthContextProps>({} as AuthContextProp
 export function AuthContextProvider({ children }: AuthContextProvider) {
 
     const [user, setUser] = useState({
-        id: '1',
-        name: 'Rodrigo',
-        email: 'rodrigo@email.com',
-        avatar: 'rodrigo.png'
+        id: '',
+        name: '',
+        email: '',
+        avatar: ''
     })
 
-   async function signIn(email: string, password: string) {
-        setUser({
-            avatar: '',
-            email,
-            id: '',
-            name: ''
-        })
+    async function signIn(email: string, password: string) {
+
+        try {
+            const { data } = await api.post('/sessions', { email, password })
+
+            if (data.user) {
+                setUser(data.user)
+            }
+        } catch (error) {
+            throw error
+        }
     }
 
 

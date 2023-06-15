@@ -11,9 +11,14 @@ import {
   Image,
   ScrollView,
   Text,
-  VStack
+  VStack,
+  useToast
 } from 'native-base'
 import { useForm, Controller } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { AppError } from '@utils/AppError'
+import { useState } from 'react'
 
 type FormData = {
   email: string;
@@ -23,9 +28,20 @@ type FormData = {
 
 export function SignIn() {
 
+  const signInSchema = yup.object({
+    email: yup.string().required('Email obrigatório'),
+    password: yup.string().required('Senha obrgatória').min(6, 'Sua senha deve ter pelo menos 6 dígitos')
+  })
+
   const navigation = useNavigation<AuthNavigationRoutesProps>()
-  const { handleSubmit, formState: { errors }, control } = useForm<FormData>()
-  const { user, signIn } = useAuth()
+  const { handleSubmit, formState: { errors }, control } = useForm<FormData>({
+    resolver: yupResolver(signInSchema)
+  })
+
+  const { signIn } = useAuth()
+  const toast = useToast()
+
+  const [isLoading, setIsLoading] = useState(false)
 
 
   function handleNavigateToNewAccount() {
@@ -33,10 +49,23 @@ export function SignIn() {
   }
 
   async function handleSignIn({ email, password }: FormData) {
-    await signIn(email, password )
-    .then(() => {
-      console.log(user)
-    })
+    setIsLoading(true)
+    try {
+      await signIn(email, password)
+    } catch (error) {
+
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível entrar. Tente novamente mas tarde.'
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+
+      setIsLoading(false)
+    }finally{
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -93,7 +122,7 @@ export function SignIn() {
           <Controller
             name='password'
             control={control}
-            render={({field : {onChange}}) => (
+            render={({ field: { onChange } }) => (
               <Input
                 placeholder='Senha'
                 secureTextEntry
@@ -105,6 +134,7 @@ export function SignIn() {
           <Button
             onPress={handleSubmit(handleSignIn)}
             title='Acessar'
+            isLoading={isLoading}
           />
           <Button
             title='Criar conta'
