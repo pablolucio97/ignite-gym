@@ -2,7 +2,10 @@ import BackgroundImg from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useNavigation } from '@react-navigation/native'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
 import {
   Center,
   Heading,
@@ -12,14 +15,9 @@ import {
   VStack,
   useToast
 } from 'native-base'
-import { useForm, Controller } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
-import { api } from '@services/api'
-import axios from 'axios'
-import { Alert } from 'react-native'
-import { AppError } from '@utils/AppError'
+import { Controller, useForm } from 'react-hook-form'
+import * as yup from 'yup'
 
 type FormDataProps = {
   name: string;
