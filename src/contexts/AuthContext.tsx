@@ -1,11 +1,8 @@
 import { UserDTO } from '@dtos/UserDto'
 import { api } from '@services/api';
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useEffect, useState } from 'react'
+import { storageGetUser, storageSaveUser } from '../storage/storageUser'
 
-type FormData = {
-    email: string;
-    password: string
-}
 
 export type AuthContextProps = {
     user: UserDTO;
@@ -35,11 +32,23 @@ export function AuthContextProvider({ children }: AuthContextProvider) {
 
             if (data.user) {
                 setUser(data.user)
+                storageSaveUser(data.user)
             }
         } catch (error) {
             throw error
         }
     }
+
+    async function loadUserData() {
+        const userData = await storageGetUser()
+        if (userData) {
+            setUser(userData)
+        }
+    }
+
+    useEffect(() => {
+        loadUserData()
+    }, [])
 
 
     return (
