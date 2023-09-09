@@ -18,6 +18,7 @@ import {
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
+import { useAuth } from '@hooks/useAuth'
 
 type FormDataProps = {
   name: string;
@@ -43,6 +44,7 @@ export function SignUp() {
 
   const navigation = useNavigation()
   const toast = useToast()
+  const { signIn } = useAuth()
 
   function handleGoBack() {
     navigation.goBack()
@@ -52,10 +54,13 @@ export function SignUp() {
     setLoading(true)
     try {
       await api.post('/users', { name, email, password })
+        .then(() => {
+          signIn(email, password)
+        })
     } catch (error) {
       const isAppError = error instanceof AppError
       const messageError = isAppError ? error.message : 'Não foi possivel conectar ao servidor.'
-      
+
       toast.show({
         title: messageError,
         placement: 'top',
