@@ -2,7 +2,7 @@ import { AppError } from '@utils/AppError'
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'http://192.168.56.1:3333'
+    baseURL: 'http://192.168.2.170:3333'
 })
 
 //RETURNS DIFFERENT MESSAGES BASED ON THE TYPE OF ERROR RETURNED BY THE SERVER
