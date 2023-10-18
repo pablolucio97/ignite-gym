@@ -3,7 +3,7 @@ import SeriesSvg from '@assets/series.svg';
 import RepetitionsSvg from '@assets/repetitions.svg';
 import { Button } from '@components/Button';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { AppRoutesBottomTabNavigationProps } from '@routes/app.routes';
 import {
   Box,
@@ -17,13 +17,23 @@ import {
 } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 
+type RouteParamsProps = {
+  exerciseId: string
+}
+
 export function Exercise() {
 
   const navigation = useNavigation<AppRoutesBottomTabNavigationProps>();
 
+  const routes = useRoute()
+
+  const { exerciseId } = routes.params as RouteParamsProps
+
   function handleGoBack() {
     navigation.goBack();
   }
+
+  console.log(exerciseId)
 
   return (
     <VStack flex={1}>
@@ -86,7 +96,7 @@ export function Exercise() {
           </Box>
         </VStack>
       </ScrollView>
-      
+
     </VStack>
   )
 }

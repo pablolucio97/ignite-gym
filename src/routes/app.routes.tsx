@@ -14,7 +14,7 @@ type AppRoutes = {
     home: undefined;
     history: undefined;
     profile: undefined;
-    exercise: undefined;
+    exercise: { exerciseId: string };
 }
 
 export type AppRoutesBottomTabNavigationProps = BottomTabNavigationProp<AppRoutes>
@@ -40,7 +40,7 @@ export function AppRoutes() {
                     height: Platform.OS === "android" ? 'auto' : 96,
                     paddingBottom: sizes[8],
                     paddingTop: sizes[6]
-                  }
+                }
             }}
 
         >

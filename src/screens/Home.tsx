@@ -28,8 +28,8 @@ export function Home() {
     const navigation = useNavigation<AppRoutesBottomTabNavigationProps>()
     const toast = useToast();
 
-    function handleOpenExerciseDetails() {
-        navigation.navigate('exercise')
+    function handleOpenExerciseDetails(exerciseId: string) {
+        navigation.navigate('exercise', { exerciseId })
     }
 
     async function fetchGroups() {
@@ -64,7 +64,7 @@ export function Home() {
                 placement: 'top',
                 bgColor: 'red.500'
             })
-        }finally{
+        } finally {
             setIsLoading(false)
         }
     }
@@ -120,7 +120,7 @@ export function Home() {
                             keyExtractor={item => item.id}
                             renderItem={({ item }) => (
                                 <ExerciseCard
-                                    onPress={handleOpenExerciseDetails}
+                                    onPress={() => handleOpenExerciseDetails(item.id)}
                                     data={item}
                                 />
                             )}
