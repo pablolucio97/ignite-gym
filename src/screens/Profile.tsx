@@ -15,6 +15,16 @@ import { useState } from "react";
 import { Alert, TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system';
+import { useAuth } from '@hooks/useAuth';
+import { Controller, useForm } from 'react-hook-form'
+
+type FormDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    oldPassword: string;
+    newPassword: string;
+}
 
 export function Profile() {
 
@@ -24,6 +34,13 @@ export function Profile() {
     const [photoUri, setPhotoUri] = useState('')
 
     const toast = useToast()
+    const { user } = useAuth()
+    const { control } = useForm<FormDataProps>({
+        defaultValues: {
+            name: user.name,
+            email: user.email
+        }
+    })
 
     async function handleSelectUserPhoto() {
         try {
@@ -102,16 +119,34 @@ export function Profile() {
                     </TouchableOpacity>
 
 
-                    <Input
-                        bg="gray.600"
-                        placeholder='Nome'
+                    <Controller
+                        control={control}
+                        name='name'
+                        render={({ field: { value, onChange } }) => (
+                            <Input
+                                bg="gray.600"
+                                placeholder='Nome'
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        )}
                     />
 
-                    <Input
-                        bg="gray.600"
-                        placeholder="E-mail"
-                        isDisabled
+                    <Controller
+                        name='email'
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                            <Input
+                                bg="gray.600"
+                                placeholder="E-mail"
+                                isDisabled
+                                value={value}
+                                onChangeText={onChange}
+                            />
+
+                        )}
                     />
+
 
                 </Center>
 
