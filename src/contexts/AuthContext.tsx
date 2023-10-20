@@ -1,13 +1,14 @@
-import { UserDTO } from '@dtos/UserDto'
+import { UserDTO } from '@dtos/UserDto';
 import { api } from '@services/api';
-import { ReactNode, createContext, useEffect, useState } from 'react'
-import { storageGetUser, storageRemoveUser, storageSaveUser } from '../storage/storageUser'
-import { storageAuthTokenGet, storageAuthTokenSave, storageAuthTokenRemove } from '@storage/storageAuth'
+import { storageAuthTokenGet, storageAuthTokenRemove, storageAuthTokenSave } from '@storage/storageAuth';
+import { ReactNode, createContext, useEffect, useState } from 'react';
+import { storageGetUser, storageRemoveUser, storageSaveUser } from '../storage/storageUser';
 
 
 export type AuthContextProps = {
     user: UserDTO;
     signIn: (email: string, password: string) => Promise<void>;
+    updateUserProfile: (userUpdated: UserDTO) => Promise<void>;
     signOut: () => Promise<void>;
     isStorageLoadingUserData: boolean;
 }
@@ -73,6 +74,15 @@ export function AuthContextProvider({ children }: AuthContextProvider) {
         }
     }
 
+    async function updateUserProfile(userUpdated: UserDTO) {
+        try {
+            setUser(userUpdated);
+            await storageSaveUser(userUpdated);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async function signOut() {
         setIsStorageLoadingUserData(true)
         try {
@@ -98,6 +108,7 @@ export function AuthContextProvider({ children }: AuthContextProvider) {
             user,
             signIn,
             isStorageLoadingUserData,
+            updateUserProfile,
             signOut
         }}>
             {children}
