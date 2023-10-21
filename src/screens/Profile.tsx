@@ -21,6 +21,7 @@ import { useState } from "react";
 import { Controller, useForm } from 'react-hook-form';
 import { TouchableOpacity } from "react-native";
 import * as yup from 'yup';
+import defaultUserPhotoImg from '@assets/userPhotoDefault.png'
 
 type FormDataProps = {
     name: string;
@@ -100,7 +101,34 @@ export function Profile() {
                     })
                 }
 
-                setPhotoUri(selectedPhoto.assets[0].uri)
+                const fileExtension = selectedPhoto.assets[0].uri.split('.').pop()
+
+                const photoFile = {
+                    name: `${user.name}.${fileExtension}`.toLowerCase(),
+                    uri: selectedPhoto.assets[0].uri,
+                    type: `${selectedPhoto.assets[0].type}/${fileExtension}`
+                } as any
+
+                const uploadPhotoForm = new FormData()
+                uploadPhotoForm.append('avatar', photoFile)
+
+                const avatarResponse = await api.patch('/users/avatar', updateUserProfile, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                })
+
+                const updatedUser = user
+                updatedUser.avatar = avatarResponse.data.avatar
+
+                await updateUserProfile(updatedUser)
+
+                toast.show({
+                    title: 'Foto atualizada!',
+                    placement: 'top',
+                    bgColor: 'green.500'
+                })
+
             }
 
         } catch (error) {
@@ -156,10 +184,11 @@ export function Profile() {
                             />
                             :
                             <UserPhoto
-                                source={{
-                                    uri: photoUri ? photoUri :
-                                        'https://github.com/pablolucio97.png'
-                                }}
+                                source={
+                                    user.avatar
+                                        ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                                        : defaultUserPhotoImg
+                                }
                                 alt="Foto do usuário"
                                 size={PHOTO_SIZE}
                             />
