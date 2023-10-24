@@ -7,6 +7,7 @@ import { HistoryByDayDTO } from '@dtos/HistoryByDayDTO';
 
 import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
+import { Spinner } from "@components/Spinner";
 
 export function History() {
 
@@ -49,37 +50,28 @@ export function History() {
             <ScreenHeader
                 title='Histórico de Exercícios'
             />
-            <SectionList
-                sections={exercises}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                    <HistoryCard
-                        data={item}
+            {
+                isLoading ? <Spinner /> :
+                    <SectionList
+                        sections={exercises}
+                        keyExtractor={item => item.id}
+                        renderItem={({ item }) => <HistoryCard data={item} />}
+                        renderSectionHeader={({ section }) => (
+                            <Heading color="gray.200" fontSize="md" mt={10} mb={3} fontFamily="heading">
+                                {section.title}
+                            </Heading>
+                        )}
+                        px={8}
+                        contentContainerStyle={exercises.length === 0 && { flex: 1, justifyContent: 'center' }}
+                        ListEmptyComponent={() => (
+                            <Text color="gray.100" textAlign="center">
+                                Não há exercícios registrados ainda. {'\n'}
+                                Vamos fazer exercícios hoje?
+                            </Text>
+                        )}
+                        showsVerticalScrollIndicator={false}
                     />
-                )}
-                renderSectionHeader={({ section }) => (
-                    <Heading color="gray.200" fontSize="md" mt={10} mb={3} ml={5} >
-                        {section.title}
-                    </Heading>
-                )}
-                contentContainerStyle={exercises.length === 0 &&
-                {
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-                ListEmptyComponent={() => (
-                    <Text
-                        color='gray.100'
-                        textAlign='center'
-                    >
-                        Não há exercícios registrados.
-                        {`\n`}
-                        Vamos treinar hoje?
-                    </Text>
-                )
-                }
-            />
+            }
         </VStack >
     )
 }
